@@ -8,9 +8,9 @@ RUN apk add --virtual .build-dependencies --no-cache openssl
 
 RUN chmod +x /docker-entrypoint.sh \
   && cd /tmp \
-  && wget -O linux_amd64_server.tar.gz "https://github.com/cnlh/nps/releases/download/v${nps_version}/linux_amd64_server.tar.gz" \
+  && wget -O linux_amd64_server.tar.gz "https://github.com/ehang-io/nps/releases/download/v${nps_version}/linux_amd64_server.tar.gz" \
   && tar -xzf linux_amd64_server.tar.gz \
-  && wget -O linux_amd64_client.tar.gz "https://github.com/cnlh/nps/releases/download/v${nps_version}/linux_amd64_client.tar.gz" \
+  && wget -O linux_amd64_client.tar.gz "https://github.com/ehang-io/nps/releases/download/v${nps_version}/linux_amd64_client.tar.gz" \
   && tar -xzf linux_amd64_client.tar.gz \
   && /tmp/nps/nps install \
   && mv /tmp/npc.conf /etc/nps/conf/ \
