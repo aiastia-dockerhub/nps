@@ -1,6 +1,6 @@
 FROM alpine:3.9
 
-ARG nps_version
+ARG nps_version=0.26.9
 
 ADD ./docker-entrypoint.sh /
 
