@@ -15,6 +15,8 @@
      
     通过变量直接修改域名，公共密钥KEY，网页管理密码，http、https域名解析端口和客户端链接服务器的端口
     
+    docker run --network=host -v /home/ubuntu/nps:/conf aiastia/np
+    
  
 ### 服务器
     
