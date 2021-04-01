@@ -1,25 +1,32 @@
-FROM alpine:3.9
+FROM alpine:3.8
+MAINTAINER docker <docker@gmail.com>
 
-ENV nps_version 0.26.9
+ENV WEB_PASSWORD !password
+ENV PUBLIC_VKEY 12345678
+ENV BRIDGE_PORT 8024
+ENV HTTP_PROXY_PORT 80
+ENV HTTPS_PROXY_PORT 443
+ENV DOMAIN nps.youdomain.com
+ENV TZ=Asia/Shanghai
 
-ADD ./docker-entrypoint.sh /
+WORKDIR /
+ENV NPS_VERSION 0.26.9
 
-RUN apk add --virtual .build-dependencies --no-cache openssl
+RUN set -x && \
+        apk add -U tzdata && \
+	wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/linux_amd64_server.tar.gz && \ 
+	tar xzf linux_amd64_server.tar.gz && \
+        wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz && \
+        tar xzf linux_amd64_client.tar.gz && \
+	rm -rf *.tar.gz && \
+	mkdir /file && \
+	wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/windows_amd64_client.tar.gz -O /file/windows_amd64_client.tar.gz && \
+	wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/windows_386_client.tar.gz -O /file/windows_386_client.tar.gz && \
+	wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz
+  
+VOLUME /conf
 
-RUN chmod +x /docker-entrypoint.sh \
-  && cd /tmp \
-  && wget -O linux_amd64_server.tar.gz "https://github.com/ehang-io/nps/releases/download/v${nps_version}/linux_amd64_server.tar.gz" \
-  && tar -xzf linux_amd64_server.tar.gz \
-  && wget -O linux_amd64_client.tar.gz "https://github.com/ehang-io/nps/releases/download/v${nps_version}/linux_amd64_client.tar.gz" \
-  && tar -xzf linux_amd64_client.tar.gz \
-  && /tmp/nps/nps install \
-  && mv /tmp/npc.conf /etc/nps/conf/ \
-  && mv /tmp/npc /usr/bin/npc \
-  && rm -rf /tmp/* \
-  && mkdir /etc/nps-docker
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN apk del .build-dependencies
-
-WORKDIR /etc/nps
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
