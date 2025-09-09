@@ -1,12 +1,29 @@
-FROM golang:1.15 as builder
-ARG GOPROXY=direct
+FROM golang:1.21-alpine as builder
+
+# 设置Go代理和禁用校验
+ENV GOPROXY=https://goproxy.cn,direct
+ENV GOSUMDB=off
+ENV CGO_ENABLED=0
+
 WORKDIR /go/src/ehang.io/nps
 COPY . .
-RUN go get -d -v ./... 
-RUN CGO_ENABLED=0 go build -ldflags="-w -s -extldflags -static" ./cmd/nps/nps.go
 
-FROM scratch
-COPY --from=builder /go/src/ehang.io/nps/nps /
-COPY --from=builder /go/src/ehang.io/nps/web /web
+# 下载依赖并验证
+RUN go mod download
+RUN go mod verify
+
+# 构建二进制文件
+RUN go build -ldflags="-w -s -extldflags -static" ./cmd/nps/nps.go
+
+# 使用alpine作为基础镜像（包含CA证书）
+FROM alpine:latest
+
+# 安装CA证书
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+COPY --from=builder /go/src/ehang.io/nps/nps .
+COPY --from=builder /go/src/ehang.io/nps/web ./web
+
 VOLUME /conf
-CMD ["/nps"]
+CMD ["./nps"]
