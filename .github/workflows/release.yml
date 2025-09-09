@@ -163,8 +163,8 @@ jobs:
         platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
         push: ${{ github.event_name != 'workflow_dispatch' || !github.event.inputs.test_mode }}
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/nps:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/nps:${{ env.RELEASE_VERSION }}
+          ${{ secrets.DOCKER_USERNAME }}/nps:latest
+          ${{ secrets.DOCKER_USERNAME }}/nps:${{ env.RELEASE_VERSION }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
         
@@ -176,8 +176,8 @@ jobs:
         platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
         push: ${{ github.event_name != 'workflow_dispatch' || !github.event.inputs.test_mode }}
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/npc:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/npc:${{ env.RELEASE_VERSION }}
+          ${{ secrets.DOCKER_USERNAME }}/npc:latest
+          ${{ secrets.DOCKER_USERNAME }}/npc:${{ env.RELEASE_VERSION }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
         
