@@ -183,6 +183,7 @@ jobs:
         file: ./Dockerfile.npc
         platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
         push: ${{ github.event_name != 'workflow_dispatch' || !github.event.inputs.test_mode }}
+        outputs: type=registry
         tags: |
           aiastia/npc:latest
           aiastia/npc:${{ env.RELEASE_VERSION }}
