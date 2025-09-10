@@ -127,15 +127,25 @@ strip_pre=${NPC_FILE_STRIP_PRE}
 
 TEMPEOF
 
-# 启动NPS和NPC
-echo "Starting NPS..."
-/nps &
-nps_pid=$!
+MODE=${MODE:-all}
 
-echo "Starting NPC..."
-/npc &
-npc_pid=$!
-
-# 等待进程结束
-wait $nps_pid
-wait $npc_pid
+if [ "$MODE" = "nps" ]; then
+    echo "Starting NPS..."
+    /nps &
+    nps_pid=$!
+    wait $nps_pid
+elif [ "$MODE" = "npc" ]; then
+    echo "Starting NPC..."
+    /npc &
+    npc_pid=$!
+    wait $npc_pid
+else
+    echo "Starting NPS..."
+    /nps &
+    nps_pid=$!
+    echo "Starting NPC..."
+    /npc &
+    npc_pid=$!
+    wait $nps_pid
+    wait $npc_pid
+fi
