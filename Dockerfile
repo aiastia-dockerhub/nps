@@ -2,7 +2,7 @@ FROM alpine:3.8
 
 # 设置元数据标签
 LABEL maintainer="docker <docker@gmail.com>" \
-      version="0.26.9" \
+      version="0.26.10" \
       description="NPS - A lightweight, high-performance intranet penetration proxy server"
 
 # 设置环境变量
@@ -13,7 +13,7 @@ ENV WEB_PASSWORD !password \
     HTTPS_PROXY_PORT 4443 \
     DOMAIN nps.youdomain.com \
     TZ=Asia/Shanghai \
-    NPS_VERSION 0.26.9 \
+    NPS_VERSION 0.26.10 \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     # 新增的环境变量
@@ -55,7 +55,6 @@ ENV WEB_PASSWORD !password \
     FLOW_STORE_INTERVAL=1
 
 # 安装必要的工具和设置时区
-# 安装必要的工具和设置时区
 RUN set -x && \
     apk add --no-cache --virtual .build-deps wget tzdata ca-certificates && \
     apk add --no-cache tzdata && \
@@ -63,21 +62,22 @@ RUN set -x && \
     echo "${TZ:-Asia/Shanghai}" > /etc/timezone && \
     apk del .build-deps
 
-
 # 设置工作目录
 WORKDIR /app
 
 # 下载并解压NPS和NPC
 RUN set -x && \
-    wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/linux_amd64_server.tar.gz && \
+    # 下载NPS服务端和客户端
+    wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/linux_amd64_server.tar.gz && \
     tar xzf linux_amd64_server.tar.gz && \
-    wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz && \
+    wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz && \
     tar xzf linux_amd64_client.tar.gz && \
     rm -rf *.tar.gz && \
     mkdir -p /file && \
-    wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/windows_amd64_client.tar.gz -O /file/windows_amd64_client.tar.gz && \
-    wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/windows_386_client.tar.gz -O /file/windows_386_client.tar.gz && \
-    wget --no-check-certificate https://github.com/cnlh/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz -O /file/linux_amd64_client.tar.gz
+    # 下载其他平台的客户端（用于提供下载）
+    wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/windows_amd64_client.tar.gz -O /file/windows_amd64_client.tar.gz && \
+    wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/windows_386_client.tar.gz -O /file/windows_386_client.tar.gz && \
+    wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz -O /file/linux_amd64_client.tar.gz
 
 # 创建必要的目录
 RUN mkdir -p /conf
