@@ -55,11 +55,14 @@ ENV WEB_PASSWORD !password \
     FLOW_STORE_INTERVAL=1
 
 # 安装必要的工具和设置时区
+# 安装必要的工具和设置时区
 RUN set -x && \
     apk add --no-cache --virtual .build-deps wget tzdata ca-certificates && \
-    cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
-    echo "${TZ}" > /etc/timezone && \
+    apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/${TZ:-Asia/Shanghai} /etc/localtime && \
+    echo "${TZ:-Asia/Shanghai}" > /etc/timezone && \
     apk del .build-deps
+
 
 # 设置工作目录
 WORKDIR /app
