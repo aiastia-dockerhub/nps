@@ -21,7 +21,7 @@ FROM alpine:latest
 # 安装CA证书
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+WORKDIR /app
 COPY --from=builder /go/src/ehang.io/nps/npc .
 
 VOLUME /conf
