@@ -13,7 +13,7 @@ ENV WEB_PASSWORD !password \
     HTTPS_PROXY_PORT 4443 \
     DOMAIN nps.youdomain.com \
     TZ=Asia/Shanghai \
-    NPS_VERSION 0.26.10 \
+    NPS_VERSION=0.26.10 \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     # 新增的环境变量
