@@ -1,0 +1,42 @@
+services:
+  nps:
+    image: aiastia/nps:latest
+    container_name: nps-server
+    restart: unless-stopped
+    volumes:
+      - ./conf:/app/conf  # 修改为正确的配置目录
+    ports:
+      - "8080:8080"  # Web管理界面端口
+      - "8024:8024"  # 网桥端口
+      - "8088:8088"  # HTTP代理端口
+      - "4443:4443"  # HTTPS代理端口
+    environment:
+      # Web界面设置
+      - WEB_USERNAME=admin
+      - WEB_PASSWORD=your_password
+      - WEB_PORT=8080
+      - WEB_IP=0.0.0.0
+      - WEB_OPEN_SSL=false  # 初始设置为false便于测试
+      - WEB_CERT_FILE=/app/conf/server.pem
+      - WEB_KEY_FILE=/app/conf/server.key
+      
+      # 网络设置
+      - BRIDGE_PORT=8024
+      - HTTP_PROXY_PORT=8088
+      - HTTPS_PROXY_PORT=4443
+      - PUBLIC_VKEY=your_vkey
+      
+      # 认证设置
+      - AUTH_KEY=your_auth_key
+      - AUTH_CRYPT_KEY=your_crypt_key
+      
+      # 功能开关
+      - ALLOW_USER_LOGIN=true
+      - ALLOW_USER_REGISTER=false
+      - ALLOW_FLOW_LIMIT=true
+      - ALLOW_RATE_LIMIT=true
+      - SYSTEM_INFO_DISPLAY=true
+      
+      # 运行模式
+      - RUNMODE=dev  # 开发模式便于调试
+      - LOG_LEVEL=7  # 详细日志

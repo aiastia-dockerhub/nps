@@ -25,5 +25,8 @@ WORKDIR /app
 COPY --from=builder /go/src/ehang.io/nps/nps .
 COPY --from=builder /go/src/ehang.io/nps/web ./web
 
-VOLUME /conf
+# 创建配置目录
+RUN mkdir -p /app/conf
+
+VOLUME /app/conf
 CMD ["./nps"]

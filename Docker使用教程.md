@@ -14,7 +14,6 @@ NPS 提供了三种不同的部署方案：
 
 ```yaml
 # docker-compose-nps.yml
-version: '3.8'
 
 services:
   nps:

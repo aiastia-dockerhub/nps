@@ -21,7 +21,7 @@ cleanup() {
 trap cleanup TERM INT
 
 # 生成NPS配置
-cat > /conf/nps.conf<< TEMPEOF
+cat > /app/conf/nps.conf<< TEMPEOF
 appname = nps
 #Boot mode(dev|pro)
 runmode = ${RUNMODE}
@@ -99,7 +99,7 @@ http_cache_length=${HTTP_CACHE_LENGTH}
 TEMPEOF
 
 # 生成NPC配置
-cat > /conf/npc.conf<< TEMPEOF
+cat > /app/conf/npc.conf<< TEMPEOF
 [common]
 server_addr=${NPC_SERVER_ADDR}:${BRIDGE_PORT}
 conn_type=${NPC_CONN_TYPE}
