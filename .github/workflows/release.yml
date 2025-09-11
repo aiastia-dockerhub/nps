@@ -167,6 +167,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # 构建并推送三个镜像
+
+
       - name: Build and push NPSC image
         uses: docker/build-push-action@v5
         with:
@@ -180,8 +182,8 @@ jobs:
             aiastia/npsc:latest
             aiastia/npsc:${{ env.RELEASE_VERSION }}
           cache-from: type=local,src=${{ env.DOCKER_CACHE_PATH }}
-          cache-to: type=local,dest=${{ env.DOCK
-      
+          cache-to: type=local,dest=${{ env.DOCKER_CACHE_PATH }}-new,mode=max
+
       - name: Build and push NPS image
         uses: docker/build-push-action@v5
         with:
@@ -211,8 +213,6 @@ jobs:
             aiastia/npc:${{ env.RELEASE_VERSION }}
           cache-from: type=local,src=${{ env.DOCKER_CACHE_PATH }}
           cache-to: type=local,dest=${{ env.DOCKER_CACHE_PATH }}-new,mode=max
-
-ER_CACHE_PATH }}-new,mode=max
 
       - name: Move cache
         run: |
