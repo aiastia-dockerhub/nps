@@ -6,17 +6,16 @@ LABEL maintainer="docker <docker@gmail.com>" \
       description="NPS - A lightweight, high-performance intranet penetration proxy server"
 
 # 设置环境变量
-ENV WEB_PASSWORD !password \
-    PUBLIC_VKEY 12345678 \
-    BRIDGE_PORT 8024 \
-    HTTP_PROXY_PORT 8088 \
-    HTTPS_PROXY_PORT 4443 \
-    DOMAIN nps.youdomain.com \
+ENV WEB_PASSWORD=!password \
+    PUBLIC_VKEY=12345678 \
+    BRIDGE_PORT=8024 \
+    HTTP_PROXY_PORT=8088 \
+    HTTPS_PROXY_PORT=4443 \
+    DOMAIN=nps.youdomain.com \
     TZ=Asia/Shanghai \
     NPS_VERSION=0.26.10 \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
-    # 新增的环境变量
     WEB_OPEN_SSL=true \
     WEB_USERNAME=admin \
     WEB_PORT=8080 \
@@ -53,6 +52,7 @@ ENV WEB_PASSWORD !password \
     RUNMODE=dev \
     LOG_LEVEL=7 \
     FLOW_STORE_INTERVAL=1
+
 
 # 安装必要的工具和设置时区
 RUN set -x && \
