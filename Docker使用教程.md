@@ -89,7 +89,6 @@ services:
       - NPC_FILE_SERVER_PORT=8081
       - NPC_FILE_LOCAL_PATH=/file/
       - NPC_FILE_STRIP_PRE=/
-```
 
   # NPSC 集成版
   npsc:
@@ -130,6 +129,8 @@ services:
       - NPC_CRYPT=true
       - NPC_COMPRESS=true
       - NPC_REMARK=npsc-client
+```
+
 ```
 
 ## 使用说明
