@@ -70,8 +70,11 @@ RUN set -x && \
     # 下载NPS服务端和客户端
     wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/linux_amd64_server.tar.gz && \
     tar xzf linux_amd64_server.tar.gz && \
+    mv ./nps /app/nps && \
     wget --no-check-certificate https://github.com/ehang-io/nps/releases/download/v${NPS_VERSION}/linux_amd64_client.tar.gz && \
     tar xzf linux_amd64_client.tar.gz && \
+    mv ./npc /app/npc && \
+    chmod +x /app/nps /app/npc && \
     rm -rf *.tar.gz && \
     mkdir -p /file && \
     # 下载其他平台的客户端（用于提供下载）

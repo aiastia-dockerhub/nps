@@ -131,20 +131,20 @@ MODE=${MODE:-all}
 
 if [ "$MODE" = "nps" ]; then
     echo "Starting NPS..."
-    /nps &
+    /app/nps &
     nps_pid=$!
     wait $nps_pid
 elif [ "$MODE" = "npc" ]; then
     echo "Starting NPC..."
-    /npc &
+    /app/npc &
     npc_pid=$!
     wait $npc_pid
 else
     echo "Starting NPS..."
-    /nps &
+    /app/nps &
     nps_pid=$!
     echo "Starting NPC..."
-    /npc &
+    /app/npc &
     npc_pid=$!
     wait $nps_pid
     wait $npc_pid
