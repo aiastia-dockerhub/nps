@@ -13,7 +13,7 @@ NPS 提供了三种不同的 Docker 镜像：
 
 ```yaml
 version: '3.8'
-```
+
 
 services:
   # NPS 服务端
@@ -27,8 +27,6 @@ services:
       - "8088:8088"  # HTTP代理端口
       - "4443:4443"  # HTTPS代理端口
     environment:
-```
-
       # Web界面设置
       - WEB_USERNAME=admin
       - WEB_PASSWORD=your_password
