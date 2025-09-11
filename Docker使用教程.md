@@ -1,22 +1,22 @@
-# NPS Docker Compose 使用教程
+# NPS Docker 部署教程
 
 ## 简介
 
-NPS 提供了三种不同的 Docker 镜像：
-1. `aiastia/nps` - NPS 服务端
-2. `aiastia/npc` - NPC 客户端
-3. `aiastia/npsc` - NPS+NPC 集成版
+NPS 提供了三种不同的部署方案：
 
-## Docker Compose 配置文件
+1. `aiastia/nps` - NPS 服务端：用于部署中央服务器
+2. `aiastia/npc` - NPC 客户端：用于部署在需要内网穿透的客户端机器上
+3. `aiastia/npsc` - NPS+NPC 集成版：同时包含服务端和客户端功能
 
-创建 `docker-compose.yml` 文件：
+## 方案一：部署 NPS 服务端
+
+这个方案适用于需要部署中央服务器的场景。
 
 ```yaml
+# docker-compose-nps.yml
 version: '3.8'
 
-
 services:
-  # NPS 服务端
   nps:
     image: aiastia/nps:latest
     container_name: nps
@@ -69,28 +69,59 @@ services:
       - FLOW_STORE_INTERVAL=1
 
   # NPC 客户端
+```
+
+启动服务：
+```bash
+docker compose -f docker-compose-nps.yml up -d
+```
+
+## 方案二：部署 NPC 客户端
+
+这个方案适用于需要进行内网穿透的客户端机器。
+
+```yaml
+# docker-compose-npc.yml
+version: '3.8'
+
+services:
   npc:
     image: aiastia/npc:latest
     container_name: npc
     restart: unless-stopped
-    depends_on:
-      - nps
     environment:
-      - NPC_SERVER_ADDR=nps
+      - NPC_SERVER_ADDR=your.server.com  # 替换为你的NPS服务器地址
       - NPC_CONN_TYPE=tcp
-      - NPC_VKEY=your_vkey
+      - NPC_VKEY=your_vkey              # 与NPS服务端配置的PUBLIC_VKEY相同
       - NPC_AUTO_RECONNECTION=true
       - NPC_CRYPT=true
       - NPC_COMPRESS=true
-      - NPC_REMARK=npc-client
+      - NPC_REMARK=my-client
       - NPC_WEB_ADMIN_MODE=https
       - NPC_WEB_FILE_MODE=http
       - NPC_FILE_MODE=file
       - NPC_FILE_SERVER_PORT=8081
       - NPC_FILE_LOCAL_PATH=/file/
       - NPC_FILE_STRIP_PRE=/
+    # 如果需要映射本地端口，添加ports配置
+    ports:
+      - "8081:8081"  # 示例：映射本地8081端口
+```
 
-  # NPSC 集成版
+启动服务：
+```bash
+docker compose -f docker-compose-npc.yml up -d
+```
+
+## 方案三：部署 NPSC 集成版
+
+这个方案适用于需要在同一台机器上同时运行服务端和客户端的场景。
+
+```yaml
+# docker-compose-npsc.yml
+version: '3.8'
+
+services:
   npsc:
     image: aiastia/npsc:latest
     container_name: npsc
@@ -133,27 +164,45 @@ services:
 
 ```
 
-## 使用说明
+## 常用操作命令
 
-1. 创建并启动服务：
+### 查看日志
 ```bash
-docker compose up -d
+# 查看服务端日志
+docker compose -f docker-compose-nps.yml logs -f
+
+# 查看客户端日志
+docker compose -f docker-compose-npc.yml logs -f
+
+# 查看集成版日志
+docker compose -f docker-compose-npsc.yml logs -f
 ```
 
-2. 停止服务：
+### 停止服务
 ```bash
-docker compose down
+# 停止服务端
+docker compose -f docker-compose-nps.yml down
+
+# 停止客户端
+docker compose -f docker-compose-npc.yml down
+
+# 停止集成版
+docker compose -f docker-compose-npsc.yml down
 ```
 
-3. 查看日志：
+### 更新镜像
 ```bash
-# 查看所有服务日志
-docker compose logs
+# 更新服务端
+docker compose -f docker-compose-nps.yml pull
+docker compose -f docker-compose-nps.yml up -d
 
-# 查看特定服务日志
-docker compose logs nps
-docker compose logs npc
-docker compose logs npsc
+# 更新客户端
+docker compose -f docker-compose-npc.yml pull
+docker compose -f docker-compose-npc.yml up -d
+
+# 更新集成版
+docker compose -f docker-compose-npsc.yml pull
+docker compose -f docker-compose-npsc.yml up -d
 ```
 
 4. 更新服务：
@@ -234,23 +283,31 @@ docker compose up -d
    - 检查防火墙设置
    - 验证用户名密码
 
+## 部署建议
+
+1. **服务端部署 (NPS)**
+   - 建议部署在有公网IP的服务器上
+   - 确保配置的端口都已开放
+   - 使用复杂的 PUBLIC_VKEY 和密码
+   - 建议启用SSL以保证安全性
+
+2. **客户端部署 (NPC)**
+   - 确保 NPC_SERVER_ADDR 配置正确
+   - VKEY 需要与服务端的 PUBLIC_VKEY 匹配
+   - 根据需要映射相应的本地端口
+
+3. **集成版部署 (NPSC)**
+   - 适用于测试环境或小规模部署
+   - 注意端口冲突问题
+   - 客户端部分配置了连接到本地服务端
+
 ## 注意事项
 
-1. 请妥善保管配置文件和SSL证书
-2. 建议修改默认的Web管理密码
-3. 生产环境建议使用SSL加密
-4. 确保防火墙开放相应端口
-5. 定期备份配置文件
-
-## 健康检查
-
-所有镜像都包含了健康检查机制，可以通过以下命令查看容器状态：
-
-```bash
-docker ps -a --filter name=nps
-docker ps -a --filter name=npc
-docker ps -a --filter name=npsc
-```
+1. 修改默认密码
+2. 使用复杂的 VKEY
+3. 及时更新镜像版本
+4. 配置合适的端口映射
+5. 正确设置防火墙规则
 
 ## 日志查看
 
