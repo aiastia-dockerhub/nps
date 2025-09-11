@@ -125,11 +125,10 @@ services:
     image: aiastia/npsc:latest
     container_name: npsc
     restart: unless-stopped
-    ports:
-      - "8081:8080"  # Web管理界面端口
-      - "8025:8024"  # 网桥端口
-      - "8089:8088"  # HTTP代理端口
-      - "4444:4443"  # HTTPS代理端口
+    network_mode: host   # 使用 host 模式，直接用宿主机端口
+    volumes:
+      - ./conf:/app/conf        # 映射配置文件目录
+      - ./file:/file            # 映射本地文件目录（对应 NPS 的文件功能）
     environment:
       # Web界面设置
       - WEB_USERNAME=admin
@@ -137,9 +136,9 @@ services:
       - WEB_PORT=8080
       - WEB_IP=0.0.0.0
       - WEB_BASE_URL=
-      - WEB_OPEN_SSL=true
-      - WEB_CERT_FILE=/conf/server.pem
-      - WEB_KEY_FILE=/conf/server.key
+      - WEB_OPEN_SSL=false
+      - WEB_CERT_FILE=/app/conf/server.pem
+      - WEB_KEY_FILE=/app/conf/server.key
       
       # 网络设置
       - BRIDGE_PORT=8024
@@ -159,6 +158,7 @@ services:
       - NPC_CRYPT=true
       - NPC_COMPRESS=true
       - NPC_REMARK=npsc-client
+
 ```
 
 ```
