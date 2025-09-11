@@ -167,6 +167,21 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # 构建并推送三个镜像
+      - name: Build and push NPSC image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: ${{ env.DOCKER_PLATFORMS }}
+          push: ${{ github.event_name != 'workflow_dispatch' || !github.event.inputs.test_mode }}
+          outputs: |
+            type=registry
+          tags: |
+            aiastia/npsc:latest
+            aiastia/npsc:${{ env.RELEASE_VERSION }}
+          cache-from: type=local,src=${{ env.DOCKER_CACHE_PATH }}
+          cache-to: type=local,dest=${{ env.DOCK
+      
       - name: Build and push NPS image
         uses: docker/build-push-action@v5
         with:
@@ -197,20 +212,7 @@ jobs:
           cache-from: type=local,src=${{ env.DOCKER_CACHE_PATH }}
           cache-to: type=local,dest=${{ env.DOCKER_CACHE_PATH }}-new,mode=max
 
-      - name: Build and push NPSC image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: ${{ env.DOCKER_PLATFORMS }}
-          push: ${{ github.event_name != 'workflow_dispatch' || !github.event.inputs.test_mode }}
-          outputs: |
-            type=registry
-          tags: |
-            aiastia/npsc:latest
-            aiastia/npsc:${{ env.RELEASE_VERSION }}
-          cache-from: type=local,src=${{ env.DOCKER_CACHE_PATH }}
-          cache-to: type=local,dest=${{ env.DOCKER_CACHE_PATH }}-new,mode=max
+ER_CACHE_PATH }}-new,mode=max
 
       - name: Move cache
         run: |
